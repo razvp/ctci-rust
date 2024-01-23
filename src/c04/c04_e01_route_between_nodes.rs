@@ -8,20 +8,37 @@ find out whether there is a route between two nodes.
 
 // We should use bfs
 
-use std::{rc::Rc, cell::RefCell, fmt::Display, collections::{VecDeque, HashSet}, hash::Hash};
-type NodeRef = Rc<RefCell<Node>>;
+use std::{rc::Rc, cell::RefCell, fmt::Display, collections::{VecDeque, HashSet}, hash::Hash, ops::Deref, borrow::Borrow};
+#[derive(Debug, Clone,PartialEq, Eq)]
+struct NodeRef(Rc<RefCell<Node>>);
+impl Deref for NodeRef {
+    type Target = Rc<RefCell<Node>>;
 
-#[derive(Debug,PartialEq, Eq)]
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Hash for NodeRef {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        let borrow = &self.0.deref().borrow().vertex;
+        borrow.hash(state)
+    }
+}
+
+
+
+#[derive(Debug, Hash, PartialEq, Eq)]
 struct Node {
     adjacent: Vec<NodeRef>,
     vertex: String,
 }
 impl Node {
     pub fn new(s: &str) -> NodeRef {
-        Rc::new(RefCell::new(Self {
+        NodeRef(Rc::new(RefCell::new(Node {
             adjacent: Vec::new(),
             vertex: s.to_owned(),
-        }))
+        })))
     }
 
     pub fn add_adjacent(&mut self, n: NodeRef) {
@@ -51,10 +68,10 @@ impl Display for Graph {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for n in self.get_nodes() {
             let mut adjacent_nodes = String::new();
-            let n = n.as_ref().borrow();
+            let n = n.0.as_ref().borrow();
             for nref in n.adjacent.iter() {
                 let count = Rc::strong_count(nref);
-                adjacent_nodes.push_str(nref.as_ref().borrow().vertex.as_str());
+                adjacent_nodes.push_str(nref.0.as_ref().borrow().vertex.as_str());
                 adjacent_nodes.push_str(format!("[{count}]").as_str());
                 adjacent_nodes.push(' ');
             }
@@ -65,19 +82,33 @@ impl Display for Graph {
     }
 }
 
-// fn route_between_nodes(_g: &Graph, n1: &NodeRef, n2: &NodeRef) {
-//     // We actually don't need the Graph
-//     let mut queue = VecDeque::new();
-//     let mut set = HashSet::new();
-//     queue.push_back(n1);
-//
-//     while let Some(node) = queue.pop_front() {
-//         set.insert(node);
-//     }
-// }
+fn route_between_nodes(_g: &Graph, n1: &NodeRef, n2: &NodeRef) -> bool {
+    // We actually don't need the Graph
+    let mut queue = VecDeque::new();
+    let mut visited = HashSet::new();
+    queue.push_back(n1.to_owned());
+
+    while let Some(node) = queue.pop_front() {
+        // visited.insert(node.0.as_ref().borrow().vertex);
+        visited.insert(node.clone());
+        if node == *n2 {
+            return true;
+        } else {
+            for adj in node.0.as_ref().borrow().adjacent.iter() {
+                if !visited.contains(&adj) {
+                    let adj= adj.to_owned();
+                    queue.push_back(adj);
+                }
+            }
+        }
+    }
+
+    false
+}
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
     #[test]
     fn test_graph_structure() {
@@ -98,15 +129,18 @@ mod tests {
         temp[4].as_ref().borrow_mut().add_adjacent(temp[5].clone());
         // temp[2].as_ref().borrow_mut().add_adjacent(temp[3].clone());
 
-        dbg!(&temp[0]);
+        let mut set = HashSet::new();
+        set.insert(&temp[0]);
+        dbg!(&set);
+        // dbg!(&temp[0]);
         for node in temp {
             g.add_node(node);
         }
-
-        dbg!(&g);
         println!("{g}");
 
-        assert!(false);
+        let start = &g.get_nodes()[3];
+        let end = &g.get_nodes()[5];
+        assert_eq!(route_between_nodes(&g, &start, &end), true);
     }
 }
 
