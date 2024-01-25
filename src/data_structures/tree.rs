@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
-type Link = Option<Box<Node>>;
+pub type Link = Option<Box<Node>>;
 #[derive(Debug)]
-struct Node {
+pub struct Node {
     val: i32,
     left: Link,
     right: Link,
@@ -16,15 +16,25 @@ impl Node {
             right: None,
         })
     }
+    pub fn val(&self) -> &i32 {
+        &self.val
+    }
+    pub fn left(&self) -> &Link {
+        &self.left
+    }
+    pub fn right(&self) -> &Link {
+        &self.right
+    }
 }
 
 #[derive(Debug)]
 pub struct BSTree {
-    root: Link,
+    pub root: Link,
 }
 
 impl BSTree {
     pub fn minimal_bstree_from_slice(v: &[i32]) -> Self {
+        // make sure vector is sorted
         let mut v = v.to_owned();
         v.sort();
         Self {
