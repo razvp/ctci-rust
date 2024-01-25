@@ -24,5 +24,4 @@ fn test_permutation_1() {
     let s2 = "bcad".to_string();
 
     assert!(is_permutation_1(&s1, &s2));
-    assert!(!is_permutation_1(&s1, &s2));
 }
