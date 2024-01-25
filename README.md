@@ -14,7 +14,7 @@
 - skip for now
 ### Chapter 4: Trees and Graphs
 - [x] 4.1 Route Between Nodes
-- [ ] 4.2 Minimal Tree:
+- [x] 4.2 Minimal Tree:
 - [ ] 4.3 List of Depths
 - [ ] 4.4 Check Balanced:
 - [ ] 4.5 Validate BST
