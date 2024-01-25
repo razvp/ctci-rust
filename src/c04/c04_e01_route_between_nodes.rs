@@ -14,7 +14,7 @@ use std::{
     fmt::Display,
     hash::Hash,
     ops::Deref,
-    rc::Rc, borrow::BorrowMut,
+    rc::Rc,
 };
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct NodeRef(Rc<RefCell<Node>>);

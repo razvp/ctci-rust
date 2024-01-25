@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::collections::HashMap;
 
 fn is_palindrom_permutation(s: &str) -> bool {
@@ -22,12 +23,7 @@ fn is_palindrom_permutation(s: &str) -> bool {
     true
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_is_palindrome_perm() {
-        assert!(is_palindrom_permutation("Tact Coa"));
-    }
+#[test]
+fn test_is_palindrome_perm() {
+    assert!(is_palindrom_permutation("Tact Coa"));
 }

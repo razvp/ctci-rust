@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::{collections::HashMap, usize};
 
 fn is_unique_solution_1(s: &str) -> bool {
@@ -15,9 +17,10 @@ fn is_unique_solution_1(s: &str) -> bool {
 }
 
 fn is_unique_solution_2(s: &str) -> bool {
-    if s.len() > 128 { // no more than 128 chars in alphabet
+    if s.len() > 128 {
+        // no more than 128 chars in alphabet
         return false;
-    } 
+    }
 
     let mut occurance_array = [false; 128];
 
@@ -35,24 +38,19 @@ fn is_unique_solution_2(s: &str) -> bool {
     true
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
+#[test]
+fn test_is_unique() {
+    let s = "abcd".to_string();
+    assert_eq!(is_unique_solution_1(&s), true);
 
-    #[test]
-    fn test_is_unique() {
-        let s = "abcd".to_string();
-        assert_eq!(is_unique_solution_1(&s), true);
+    let s = "abcda".to_string();
+    assert_eq!(is_unique_solution_1(&s), false);
+}
 
-        let s = "abcda".to_string();
-        assert_eq!(is_unique_solution_1(&s), false);
-    }
-
-    #[test]
-    fn test_is_unique_2() {
-        let s = "aA=".to_string();
-        assert_eq!(is_unique_solution_2(&s), true);
-        let s = "abcda".to_string();
-        assert_eq!(is_unique_solution_2(&s), false);
-    }
+#[test]
+fn test_is_unique_2() {
+    let s = "aA=".to_string();
+    assert_eq!(is_unique_solution_2(&s), true);
+    let s = "abcda".to_string();
+    assert_eq!(is_unique_solution_2(&s), false);
 }
