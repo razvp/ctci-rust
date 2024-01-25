@@ -8,8 +8,15 @@ find out whether there is a route between two nodes.
 
 // We should use bfs
 
-use std::{rc::Rc, cell::RefCell, fmt::Display, collections::{VecDeque, HashSet}, hash::Hash, ops::Deref, borrow::Borrow};
-#[derive(Debug, Clone,PartialEq, Eq)]
+use std::{
+    cell::RefCell,
+    collections::{HashSet, VecDeque},
+    fmt::Display,
+    hash::Hash,
+    ops::Deref,
+    rc::Rc, borrow::BorrowMut,
+};
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct NodeRef(Rc<RefCell<Node>>);
 impl Deref for NodeRef {
     type Target = Rc<RefCell<Node>>;
@@ -26,7 +33,11 @@ impl Hash for NodeRef {
     }
 }
 
-
+impl NodeRef {
+    fn add_adjacent(&self, other: &Self) {
+        self.as_ref().borrow_mut().add_adjacent(other.clone());
+    }
+}
 
 #[derive(Debug, Hash, PartialEq, Eq)]
 struct Node {
@@ -53,10 +64,12 @@ struct Graph {
 
 impl Graph {
     pub fn new() -> Self {
-        Self {vertices: Vec::new()}
+        Self {
+            vertices: Vec::new(),
+        }
     }
     pub fn add_node(&mut self, n: NodeRef) {
-        self.vertices.push(n); 
+        self.vertices.push(n);
     }
     pub fn get_nodes(&self) -> &Vec<NodeRef> {
         &self.vertices
@@ -89,14 +102,14 @@ fn route_between_nodes(_g: &Graph, n1: &NodeRef, n2: &NodeRef) -> bool {
     queue.push_back(n1.to_owned());
 
     while let Some(node) = queue.pop_front() {
-        // visited.insert(node.0.as_ref().borrow().vertex);
         visited.insert(node.clone());
+        // visited.insert(node.clone());
         if node == *n2 {
             return true;
         } else {
             for adj in node.0.as_ref().borrow().adjacent.iter() {
                 if !visited.contains(&adj) {
-                    let adj= adj.to_owned();
+                    let adj = adj.to_owned();
                     queue.push_back(adj);
                 }
             }
@@ -111,7 +124,7 @@ mod tests {
 
     use super::*;
     #[test]
-    fn test_graph_structure() {
+    fn test_graph_structure_and_route_between_nodes() {
         let mut g = Graph::new();
         let dummy = Node::new("dummy");
         let mut temp = vec![dummy; 6];
@@ -122,17 +135,12 @@ mod tests {
         temp[4] = Node::new("e");
         temp[5] = Node::new("f");
 
-        temp[0].as_ref().borrow_mut().add_adjacent(temp[1].clone());
-        temp[0].as_ref().borrow_mut().add_adjacent(temp[2].clone());
-        temp[0].as_ref().borrow_mut().add_adjacent(temp[3].clone());
-        temp[3].as_ref().borrow_mut().add_adjacent(temp[4].clone());
-        temp[4].as_ref().borrow_mut().add_adjacent(temp[5].clone());
-        // temp[2].as_ref().borrow_mut().add_adjacent(temp[3].clone());
+        temp[0].add_adjacent(&temp[1]);
+        temp[0].add_adjacent(&temp[2]);
+        temp[0].add_adjacent(&temp[3]);
+        temp[3].add_adjacent(&temp[4]);
+        temp[4].add_adjacent(&temp[5]);
 
-        let mut set = HashSet::new();
-        set.insert(&temp[0]);
-        dbg!(&set);
-        // dbg!(&temp[0]);
         for node in temp {
             g.add_node(node);
         }
@@ -143,6 +151,3 @@ mod tests {
         assert_eq!(route_between_nodes(&g, &start, &end), true);
     }
 }
-
-
-
