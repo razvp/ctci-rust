@@ -27,6 +27,12 @@ impl Node {
     }
 }
 
+/// ```
+/// // For now you can only create a minimal_bstree
+/// // Create a tree:
+/// use ctci_rust::data_structures::tree::BSTree;
+/// let tree = BSTree::minimal_bstree_from_slice(&[1,2,3,4,5]);
+/// ```
 #[derive(Debug)]
 pub struct BSTree {
     pub root: Link,
