@@ -27,7 +27,7 @@ fn is_unique_solution_2(s: &str) -> bool {
     for c in s.chars() {
         assert!((c as usize) < 128, "not in charset");
         let c = c as usize;
-        dbg!(c as usize);
+        dbg!(c);
         if occurance_array[c] {
             return false;
         } else {
@@ -41,16 +41,16 @@ fn is_unique_solution_2(s: &str) -> bool {
 #[test]
 fn test_is_unique() {
     let s = "abcd".to_string();
-    assert_eq!(is_unique_solution_1(&s), true);
+    assert!(is_unique_solution_1(&s));
 
     let s = "abcda".to_string();
-    assert_eq!(is_unique_solution_1(&s), false);
+    assert!(!is_unique_solution_1(&s));
 }
 
 #[test]
 fn test_is_unique_2() {
     let s = "aA=".to_string();
-    assert_eq!(is_unique_solution_2(&s), true);
+    assert!(is_unique_solution_2(&s));
     let s = "abcda".to_string();
-    assert_eq!(is_unique_solution_2(&s), false);
+    assert!(!is_unique_solution_2(&s));
 }

@@ -9,15 +9,15 @@ use crate::data_structures::tree::Link;
 fn check_balanced(tree: &BSTree) -> bool {
     fn get_height(node: &Link) -> i32 {
         match node {
-            Some(node) => max(get_height(&node.left()), get_height(&node.right())) + 1,
+            Some(node) => max(get_height(node.left()), get_height(node.right())) + 1,
             None => -1,
         }
     }
 
     match &tree.root {
         Some(node) => {
-            let left_height = get_height(&node.left());
-            let right_height = get_height(&node.right());
+            let left_height = get_height(node.left());
+            let right_height = get_height(node.right());
 
             let diff = left_height - right_height;
             dbg!(&left_height, &right_height, diff);
@@ -44,9 +44,9 @@ fn check_balanced_2(tree: &BSTree) -> bool {
                 };
 
                 if left_height.abs_diff(right_height) > 1 {
-                    return std::i32::MIN;
+                    std::i32::MIN
                 } else {
-                    return max(left_height, right_height) + 1;
+                    max(left_height, right_height) + 1
                 }
             }
             None => -1,

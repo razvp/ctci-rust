@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 pub type Link = Option<Box<Node>>;
 #[derive(Debug)]
 pub struct Node {
@@ -49,7 +47,7 @@ impl BSTree {
     }
 
     fn recursive_make_tree_nodes(v: &[i32]) -> Link {
-        if v.len() == 0 {
+        if v.is_empty() {
             return None;
         }
         if v.len() == 1 {
@@ -69,7 +67,7 @@ impl BSTree {
 
         let mut root = Node::new(v[mid_index]);
         let left = Self::recursive_make_tree_nodes(&v[0..mid_index]);
-        let right = Self::recursive_make_tree_nodes(&v[(mid_index+1)..]);
+        let right = Self::recursive_make_tree_nodes(&v[(mid_index + 1)..]);
         root.left = left;
         root.right = right;
 
@@ -91,6 +89,3 @@ impl BSTree {
     //     _recursive_print(&self.root);
     // }
 }
-
-
-

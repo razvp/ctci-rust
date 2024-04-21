@@ -12,7 +12,7 @@ fn validate_bst_in_order_traversal(tree: &BSTree) -> bool {
 
                 println!("traverse {}", node.val());
                 if let Some(ref last_value_printed) = last {
-                    if last_value_printed > &node.val() {
+                    if last_value_printed > node.val() {
                         return false;
                     }
                 }

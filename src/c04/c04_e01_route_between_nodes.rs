@@ -89,7 +89,7 @@ impl Display for Graph {
                 adjacent_nodes.push(' ');
             }
             adjacent_nodes.push('\n');
-            write!(f, "{} -> {}\n", n.vertex, adjacent_nodes)?;
+            writeln!(f, "{} -> {}", n.vertex, adjacent_nodes)?;
         }
         Ok(())
     }
@@ -108,7 +108,7 @@ fn route_between_nodes(_g: &Graph, n1: &NodeRef, n2: &NodeRef) -> bool {
             return true;
         } else {
             for adj in node.0.as_ref().borrow().adjacent.iter() {
-                if !visited.contains(&adj) {
+                if !visited.contains(adj) {
                     let adj = adj.to_owned();
                     queue.push_back(adj);
                 }
@@ -148,6 +148,6 @@ mod tests {
 
         let start = &g.get_nodes()[3];
         let end = &g.get_nodes()[5];
-        assert_eq!(route_between_nodes(&g, &start, &end), true);
+        assert!(route_between_nodes(&g, start, end));
     }
 }
